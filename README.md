@@ -1,37 +1,10 @@
-Welcome to Glitch
-=================
+# phantom-carps
+tinkering with radar charts to look at data points in low-dimensional space
 
-Click `Show` in the header to see your app live. Updates to your code will instantly deploy and update live.
+from tinkering with [code-dot-org/ml-activities](https://github.com/code-dot-org/ml-activities)
 
-**Glitch** is the friendly community where you'll build the app of your dreams. Glitch lets you instantly create, remix, edit, and host an app, bot or site, and you can invite collaborators or helpers to simultaneously edit code with you.
+and visualizing the param space using this [radar chart](https://www.visualcinnamon.com/2015/10/different-look-d3-radar-chart.html) by Nadieh Bremer
 
-Find out more [about Glitch](https://glitch.com/about).
+this is with adding noise up to 50% of the value of the dimension:
 
-
-Your Project
-------------
-
-### ← README.md
-
-That's this file, where you can tell people what your cool website does and how you built it.
-
-### ← index.html
-
-Where you'll write the content of your website. 
-
-### ← style.css
-
-CSS files add styling rules to your content.
-
-### ← script.js
-
-If you're feeling fancy you can add interactivity to your site with JavaScript.
-
-### ← assets
-
-Drag in `assets`, like images or music, to add them to your project
-
-Made by [Glitch](https://glitch.com/)
--------------------
-
-\ ゜o゜)ノ
+![chart](https://cdn.glitch.com/18e693dc-15fd-4a16-9d3f-8d0bf5455d99%2FScreen%20Shot%202019-10-03%20at%204.46.00%20PM.png?v=1570135729109)
