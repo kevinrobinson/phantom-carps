@@ -330,19 +330,22 @@ async function projectWithUmap(fishes, dimensionNames) {
   var yScale = d3.scaleLinear()
       .domain(yDomain)
       .range([ 0, 600 ]);
-  const svg = document.createElementNS("http://www.w3.org/2000/svg", 'svg');
+  const ns = "http://www.w3.org/2000/svg";
+  const svg = document.createElementNS(ns, 'svg');
   svg.setAttribute('width', 800);
   svg.setAttribute('height', 600);
   svg.style.width = '800px';
   svg.style.height = '600px';
   
   console.log('projected', xys.map(xy => [xScale(xy[0]), yScale(xy[1])]));
-  xys.forEach(xy => {
+  xys.forEach((xy, index) => {
     const [x, y] = xy;
-    const circle = document.createElementNS("http://www.w3.org/2000/svg", 'circle');
+    const circle = document.createElementNS(ns, 'circle');
     circle.setAttribute('cx', xScale(x));
     circle.setAttribute('cy', yScale(y));
-    circle.setAttribute('r', 10);
+    circle.setAttribute('r', 5);
+    const i = Math.round(index / xys.length * 16);
+    circle.setAttribute('fill', `#ff${i.toString(16)}`); // rgb didn't work, even in web inspector? confused, but working around...
     svg.appendChild(circle);
   });
   document.querySelector('.umap').appendChild(svg);
