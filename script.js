@@ -319,17 +319,29 @@ async function projectWithUmap(fishes, dimensionNames) {
   console.log('embeddings', embeddings.map(e => e.dataSync()));
   const xys = await umap.fitAsync(embeddings);
   console.log('xys', xys);
-  console.log(_.min(xys.map(xy => x[0]))), _.max(xys.map(xy => x[0]))));
+  const xDomain = [_.min(xys.map(xy => xy[0])), _.max(xys.map(xy => xy[0]))];
+  const yDomain = [_.min(xys.map(xy => xy[1])), _.max(xys.map(xy => xy[1]))];
+  console.log('xDomain', xDomain);
+  console.log('yDomain', yDomain);
+  
+  var xScale = d3.scaleLinear()
+      .domain(xDomain)
+      .range([ 0, 800 ]);
+  var yScale = d3.scaleLinear()
+      .domain(yDomain)
+      .range([ 0, 600 ]);
   const svg = document.createElementNS("http://www.w3.org/2000/svg", 'svg');
   svg.setAttribute('width', 800);
   svg.setAttribute('height', 600);
   svg.style.width = '800px';
   svg.style.height = '600px';
+  
+  console.log('projected', xys.map(xy => [xScale(xy[0]), yScale(xy[1])]));
   xys.forEach(xy => {
     const [x, y] = xy;
     const circle = document.createElementNS("http://www.w3.org/2000/svg", 'circle');
-    circle.setAttribute('x', x);
-    circle.setAttribute('y', y);
+    circle.setAttribute('cx', xScale(x));
+    circle.setAttribute('cy', yScale(y));
     circle.setAttribute('r', 10);
     svg.appendChild(circle);
   });
