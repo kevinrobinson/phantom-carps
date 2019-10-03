@@ -121,7 +121,7 @@ function fishCode() {
   return sketch;
 }
 
-function radar() {
+function radar(fishes, dimensionNames) {
   /* Radar chart design created by Nadieh Bremer - VisualCinnamon.com */
 
   //////////////////////////////////////////////////////////////
@@ -139,61 +139,43 @@ function radar() {
   ////////////////////////// Data //////////////////////////////
   //////////////////////////////////////////////////////////////
 
-  var data = [
-    [
-      //iPhone
-      { axis: "Battery Life", value: 0.22 },
-      { axis: "Brand", value: 0.28 },
-      { axis: "Contract Cost", value: 0.29 },
-      { axis: "Design And Quality", value: 0.17 },
-      { axis: "Have Internet Connectivity", value: 0.22 },
-      { axis: "Large Screen", value: 0.02 },
-      { axis: "Price Of Device", value: 0.21 },
-      { axis: "To Be A Smartphone", value: 0.5 }
-    ],
-    [
-      //Samsung
-      { axis: "Battery Life", value: 0.27 },
-      { axis: "Brand", value: 0.16 },
-      { axis: "Contract Cost", value: 0.35 },
-      { axis: "Design And Quality", value: 0.13 },
-      { axis: "Have Internet Connectivity", value: 0.2 },
-      { axis: "Large Screen", value: 0.13 },
-      { axis: "Price Of Device", value: 0.35 },
-      { axis: "To Be A Smartphone", value: 0.38 }
-    ],
-    [
-      //Nokia Smartphone
-      { axis: "Battery Life", value: 0.26 },
-      { axis: "Brand", value: 0.1 },
-      { axis: "Contract Cost", value: 0.3 },
-      { axis: "Design And Quality", value: 0.14 },
-      { axis: "Have Internet Connectivity", value: 0.22 },
-      { axis: "Large Screen", value: 0.04 },
-      { axis: "Price Of Device", value: 0.41 },
-      { axis: "To Be A Smartphone", value: 0.3 }
-    ]
-  ];
+//   var data = [
+//     [
+//       //iPhone
+//       { axis: "Battery Life", value: 0.22 },
+//       { axis: "Brand", value: 0.28 },
+//       { axis: "Contract Cost", value: 0.29 },
+//       { axis: "Design And Quality", value: 0.17 },
+//       { axis: "Have Internet Connectivity", value: 0.22 },
+//       { axis: "Large Screen", value: 0.02 },
+//       { axis: "Price Of Device", value: 0.21 },
+//       { axis: "To Be A Smartphone", value: 0.5 }
+//     ],
+//     [
+//       //Samsung
+//       { axis: "Battery Life", value: 0.27 },
+//       { axis: "Brand", value: 0.16 },
+//       { axis: "Contract Cost", value: 0.35 },
+//       { axis: "Design And Quality", value: 0.13 },
+//       { axis: "Have Internet Connectivity", value: 0.2 },
+//       { axis: "Large Screen", value: 0.13 },
+//       { axis: "Price Of Device", value: 0.35 },
+//       { axis: "To Be A Smartphone", value: 0.38 }
+//     ],
+//     [
+//       //Nokia Smartphone
+//       { axis: "Battery Life", value: 0.26 },
+//       { axis: "Brand", value: 0.1 },
+//       { axis: "Contract Cost", value: 0.3 },
+//       { axis: "Design And Quality", value: 0.14 },
+//       { axis: "Have Internet Connectivity", value: 0.22 },
+//       { axis: "Large Screen", value: 0.04 },
+//       { axis: "Price Of Device", value: 0.41 },
+//       { axis: "To Be A Smartphone", value: 0.3 }
+//     ]
+//   ];
   
-  var sketch = fishCode();
-  var p = 0.5; // how much noise, as a percent of the value?
-  const div = document.createElement('div');
-  div.innerText = `noise param, p=${p}`;
-  document.querySelector('.radarChart').appendChild(div);
-  var fishes = _.range(0, 10).map(i => sketch({p}));
-  var dimensionNames = [
-    'body.width',
-    'body.height',
-    'COLORS.indexOf(body.color)',
-    'eyes.diameter',
-    'COLORS.indexOf(fins.color)',
-    'fins.topFin.widthPercent',
-    'fins.topFin.heightPercent',
-    'fins.sideFin.widthPercent',
-    'fins.sideFin.heightPercent',
-    'fins.tail.widthPercent',
-    'fins.tail.heightPercent'
-  ];
+
   var dataForFishes = fishes.map(fish => {
     return dimensionNames.map((name, dimensionIndex) => {
       return {
@@ -202,8 +184,7 @@ function radar() {
       };
     });
   });
-  console.log('dataForFishes', dataForFishes);
-  data = dataForFishes;
+  var data = dataForFishes;
   
   //////////////////////////////////////////////////////////////
   //////////////////// Draw the Chart //////////////////////////
@@ -227,11 +208,11 @@ function radar() {
 
 
 
-function ridgeline() {
+function ridgeline(fishes, dimensionNames) {
   // set the dimensions and margins of the graph
   var margin = {top: 60, right: 30, bottom: 20, left:110},
-      width = 460 - margin.left - margin.right,
-      height = 400 - margin.top - margin.bottom;
+      width = 800 - margin.left - margin.right,
+      height = 600 - margin.top - margin.bottom;
 
   // append the svg object to the body of the page
   var svg = d3.select(".ridgeline")
@@ -243,16 +224,30 @@ function ridgeline() {
             "translate(" + margin.left + "," + margin.top + ")");
 
   //read data
-  // https://raw.githubusercontent.com/zonination/perceptions/master/probly.csv
-  d3.csv("https://raw.githubusercontent.com/zonination/perceptions/master/probly.csv", function(data) {
 
+  // d3.csv("https://raw.githubusercontent.com/zonination/perceptions/master/probly.csv", function(data) {
+  (function() {
+    console.log(data);
+    var data = fishes.map((fish, dimensionIndex) => {
+      var d = {};
+      dimensionNames.forEach((name, dimensionIndex) => {
+        d[name] = fish[dimensionIndex];
+      });
+      return d;
+    });
+    data.columns = dimensionNames;
+    console.log(data);
+    
     // Get the different categories and count them
     var categories = data.columns
     var n = categories.length
 
     // Add X axis
+    console.log('fishes', fishes);
+    var yMax = _.max(_.maxBy(fishes, fish => _.max(fish)));
+    console.log('yMax', yMax);
     var x = d3.scaleLinear()
-      .domain([-10, 140])
+      .domain([-10, yMax + 10])
       .range([ 0, width ]);
     svg.append("g")
       .attr("transform", "translate(0," + height + ")")
@@ -296,7 +291,7 @@ function ridgeline() {
             .y(function(d) { return y(d[1]); })
         )
 
-  })
+  })();
 }
 // This is what I need to compute kernel density estimation
 function kernelDensityEstimator(kernel, X) {
@@ -313,7 +308,28 @@ function kernelEpanechnikov(k) {
 }
 
 function main() {
-  radar();
-  ridgeline();
+  var sketch = fishCode();
+  var p = 0.5; // how much noise, as a percent of the value?
+  const div = document.createElement('div');
+  div.innerText = `noise param, p=${p}`;
+  document.body.appendChild(div);
+  
+  var fishes = _.range(0, 10).map(i => sketch({p}));
+  var dimensionNames = [
+    'body.width',
+    'body.height',
+    'COLORS.indexOf(body.color)',
+    'eyes.diameter',
+    'COLORS.indexOf(fins.color)',
+    'fins.topFin.widthPercent',
+    'fins.topFin.heightPercent',
+    'fins.sideFin.widthPercent',
+    'fins.sideFin.heightPercent',
+    'fins.tail.widthPercent',
+    'fins.tail.heightPercent'
+  ];
+  
+  radar(fishes, dimensionNames);
+  ridgeline(fishes, dimensionNames);
 }
 main();
