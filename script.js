@@ -1,4 +1,5 @@
 const _ = window._;
+const tf = window.tf;
 
 function fishCode() {
   const COLORS = [
@@ -307,6 +308,18 @@ function kernelEpanechnikov(k) {
   };
 }
 
+
+async function projectWithUmap(fishes, dimensionNames) {
+  console.log(JSON.stringify(fishes));
+  const embeddings = fishes.map(fish => tf.tensor(fish)); // sort of
+  const umap = new (window.UMAP)();
+  console.log('embeddings', embeddings);
+  console.log('embeddings', embeddings.map(e => e.dataSync()));
+  const xys = await umap.fitAsync(embeddings);
+  console.log('xys', xys);
+}
+
+
 function main() {
   var sketch = fishCode();
   var p = 0.5; // how much noise, as a percent of the value?
@@ -331,5 +344,6 @@ function main() {
   
   radar(fishes, dimensionNames);
   ridgeline(fishes, dimensionNames);
+  projectWithUmap(fishes, dimensionNames);
 }
 main();
