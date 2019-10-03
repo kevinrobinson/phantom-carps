@@ -1,5 +1,6 @@
 const _ = window._;
 const tf = window.tf;
+const d3 = window.d3;
 
 function fishCode() {
   const COLORS = [
@@ -309,6 +310,7 @@ function kernelEpanechnikov(k) {
 }
 
 
+// needs more than n=15 by default
 async function projectWithUmap(fishes, dimensionNames) {
   console.log(JSON.stringify(fishes));
   const embeddings = fishes.map(fish => tf.tensor(fish)); // sort of
@@ -317,6 +319,21 @@ async function projectWithUmap(fishes, dimensionNames) {
   console.log('embeddings', embeddings.map(e => e.dataSync()));
   const xys = await umap.fitAsync(embeddings);
   console.log('xys', xys);
+  console.log(_.min(xys.map(xy => x[0]))), _.max(xys.map(xy => x[0]))));
+  const svg = document.createElementNS("http://www.w3.org/2000/svg", 'svg');
+  svg.setAttribute('width', 800);
+  svg.setAttribute('height', 600);
+  svg.style.width = '800px';
+  svg.style.height = '600px';
+  xys.forEach(xy => {
+    const [x, y] = xy;
+    const circle = document.createElementNS("http://www.w3.org/2000/svg", 'circle');
+    circle.setAttribute('x', x);
+    circle.setAttribute('y', y);
+    circle.setAttribute('r', 10);
+    svg.appendChild(circle);
+  });
+  document.querySelector('.umap').appendChild(svg);
 }
 
 
@@ -327,7 +344,7 @@ function main() {
   div.innerText = `noise param, p=${p}`;
   document.body.appendChild(div);
   
-  var fishes = _.range(0, 10).map(i => sketch({p}));
+  var fishes = _.range(0, 100).map(i => sketch({p}));
   var dimensionNames = [
     'body.width',
     'body.height',
